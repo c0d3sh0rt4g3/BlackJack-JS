@@ -21,19 +21,30 @@ let crupierPoints
 
 let playerCards = []
 let playerPoints
+function play(){
+    crupierCards.push(getRandomCard())
+    crupierPoints = calculatePoints(crupierCards)
 
-// Deal initial cards
-crupierCards.push(getRandomCard())
-crupierPoints = calculatePoints(crupierCards)
+    playerCards.push(getRandomCard())
+    playerPoints = calculatePoints(playerCards)
 
-playerCards.push(getRandomCard())
-playerPoints = calculatePoints(playerCards)
+    document.write("Crupier's cards:", crupierCards + "<br>")
+    document.write("Crupier's points:", crupierPoints + "<br>")
 
-console.log("Crupier's cards:", crupierCards)
-console.log("Crupier's points:", crupierPoints)
+    document.write("Player's cards:", playerCards + "<br>")
+    document.write("Player's points:", playerPoints + "<br><br>")
+}
 
-console.log("Player's cards:", playerCards)
-console.log("Player's points:", playerPoints)
+function playOnlyCroupier(){
+    crupierCards.push(getRandomCard())
+    crupierPoints = calculatePoints(crupierCards)
+
+    document.write("Crupier's cards:", crupierCards + "<br>")
+    document.write("Crupier's points:", crupierPoints + "<br>")
+
+    document.write("Player's cards:", playerCards + "<br>")
+    document.write("Player's points:", playerPoints + "<br><br>")
+}
 
 function calculatePoints(cards) {
     let points = 0
@@ -54,4 +65,15 @@ function calculatePoints(cards) {
         points += cardPoints
     }
     return points
+}
+play()
+let decision = parseInt(prompt("Whatcha gonna do?"))
+
+switch (decision){
+    case 1:
+        play()
+        break
+    case 2:
+        playOnlyCroupier()
+        break
 }
