@@ -18,9 +18,12 @@ const getRandomCard = () => {
 
 let crupierCards = []
 let crupierPoints
+let crupierBlackJack
 
 let playerCards = []
 let playerPoints
+let playerBlackJack
+
 function play(){
     crupierCards.push(getRandomCard())
     crupierPoints = calculatePoints(crupierCards)
@@ -28,22 +31,39 @@ function play(){
     playerCards.push(getRandomCard())
     playerPoints = calculatePoints(playerCards)
 
-    document.write("Crupier's cards:", crupierCards + "<br>")
-    document.write("Crupier's points:", crupierPoints + "<br>")
+    document.getElementById("crupiertxt").textContent = "Crupier's cards: " + crupierCards + "Crupier's points:" + crupierPoints + "\n"
 
-    document.write("Player's cards:", playerCards + "<br>")
-    document.write("Player's points:", playerPoints + "<br><br>")
+    document.getElementById("playertxt").textContent = "Player's cards: " + playerCards + "\n" + "Player's points:" + playerPoints + "\n"
 }
 
 function playOnlyCroupier(){
     crupierCards.push(getRandomCard())
     crupierPoints = calculatePoints(crupierCards)
 
-    document.write("Crupier's cards:", crupierCards + "<br>")
-    document.write("Crupier's points:", crupierPoints + "<br>")
+    document.getElementById("crupiertxt").textContent = "Crupier's cards: " + crupierCards + "\n" + "Crupier's points: " + crupierPoints + "\n"
+    end()
+}
 
-    document.write("Player's cards:", playerCards + "<br>")
-    document.write("Player's points:", playerPoints + "<br><br>")
+function end(){
+    if(playerPoints > 21){
+        if(playerPoints === crupierPoints){
+            document.getElementById("result").textContent = "There's a tie"
+        }else{
+            document.getElementById("result").textContent = "You lose"
+        }
+    }else if(playerPoints <= 21){
+        if (playerBlackJack){
+            document.getElementById("result").textContent = "You scored BlackJack, you win."
+        }else if (playerPoints === crupierPoints){
+            if (crupierBlackJack){
+                document.getElementById("result").textContent = "The crupier scored BlackJack, you lose."
+            }else {
+                document.getElementById("result").textContent = "There's a tie."
+            }
+        }else {
+            document.getElementById("result").textContent = "You win."
+        }
+    }
 }
 
 function calculatePoints(cards) {
@@ -66,8 +86,7 @@ function calculatePoints(cards) {
     }
     return points
 }
-play()
-let decision = parseInt(prompt("Whatcha gonna do?"))
+/*let decision = parseInt(prompt("Whatcha gonna do?"))
 
 switch (decision){
     case 1:
@@ -76,4 +95,4 @@ switch (decision){
     case 2:
         playOnlyCroupier()
         break
-}
+}*/
