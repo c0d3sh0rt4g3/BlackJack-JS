@@ -16,52 +16,83 @@ const getRandomCard = () => {
     return card
 }
 
-let crupierCards = []
-let crupierPoints
-let crupierBlackJack
+let croupierCards = []
+let croupierPoints
+let croupierBlackJack
 
 let playerCards = []
 let playerPoints
 let playerBlackJack
 
+let bank = 5000
+let bet = 100
+
+let hasBeenPlayed
+let alreadyStopped
+
+let gameWon
+
 function play(){
-    crupierCards.push(getRandomCard())
-    crupierPoints = calculatePoints(crupierCards)
+    if(bank >= bet){
+        bank -= bet
+        hasBeenPlayed = true
+        croupierCards.push(getRandomCard())
+        croupierPoints = calculatePoints(croupierCards)
 
-    playerCards.push(getRandomCard())
-    playerPoints = calculatePoints(playerCards)
+        playerCards.push(getRandomCard())
+        playerPoints = calculatePoints(playerCards)
 
-    document.getElementById("crupiertxt").textContent = "Crupier's cards: " + crupierCards + "Crupier's points:" + crupierPoints + "\n"
+        document.getElementById("croupiertxt").textContent = "croupier's cards: " + croupierCards + "croupier's points:" + croupierPoints + "\n"
 
-    document.getElementById("playertxt").textContent = "Player's cards: " + playerCards + "\n" + "Player's points:" + playerPoints + "\n"
+        document.getElementById("playertxt").textContent = "Player's cards: " + playerCards + "\n" + "Player's points:" + playerPoints + "\n"
+        return hasBeenPlayed
+    }else {
+        alert("ERROR: You dont have enough money to place this bet")
+    }
 }
 
 function playOnlyCroupier(){
-    crupierCards.push(getRandomCard())
-    crupierPoints = calculatePoints(crupierCards)
+    if(hasBeenPlayed && !alreadyStopped){
+        alreadyStopped = true
+        croupierCards.push(getRandomCard())
+        croupierPoints = calculatePoints(croupierCards)
 
-    document.getElementById("crupiertxt").textContent = "Crupier's cards: " + crupierCards + "\n" + "Crupier's points: " + crupierPoints + "\n"
-    end()
+        document.getElementById("croupiertxt").textContent = "croupier's cards: " + croupierCards + "\n" + "croupier's points: " + croupierPoints + "\n"
+        end()
+        return alreadyStopped
+    }else {alert("can't")}
 }
 
 function end(){
     if(playerPoints > 21){
-        if(playerPoints === crupierPoints){
+        if(playerPoints === croupierPoints){
             document.getElementById("result").textContent = "There's a tie"
+            return gameWon = 0
         }else{
             document.getElementById("result").textContent = "You lose"
+            return gameWon = 2
         }
     }else if(playerPoints <= 21){
         if (playerBlackJack){
             document.getElementById("result").textContent = "You scored BlackJack, you win."
-        }else if (playerPoints === crupierPoints){
-            if (crupierBlackJack){
-                document.getElementById("result").textContent = "The crupier scored BlackJack, you lose."
+            return gameWon = 1
+        }else if (playerPoints === croupierPoints){
+            if (croupierBlackJack){
+                document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
+                return gameWon = 2
             }else {
                 document.getElementById("result").textContent = "There's a tie."
+                return gameWon = 0
             }
+        }else if(croupierBlackJack){
+            document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
+            return gameWon = 2
+        }else if(croupierPoints > playerPoints){
+            document.getElementById("result").textContent = "You lose"
+            return gameWon = 2
         }else {
             document.getElementById("result").textContent = "You win."
+            return gameWon = 1
         }
     }
 }
@@ -84,15 +115,27 @@ function calculatePoints(cards) {
         }
         points += cardPoints
     }
+    if(playerPoints > 21 || croupierPoints > 21 || playerBlackJack || croupierBlackJack){
+        end()
+    }
     return points
 }
-/*let decision = parseInt(prompt("Whatcha gonna do?"))
 
-switch (decision){
-    case 1:
-        play()
-        break
-    case 2:
-        playOnlyCroupier()
-        break
-}*/
+function blank(){
+    document.getElementById("playertxt").textContent = ""
+    document.getElementById("croupiertxt").textContent = ""
+    document.getElementById("result").textContent = ""
+}
+
+if(gameWon === 0){
+    bank += bet
+    document.getElementById("bank").textContent = bank
+    blank()
+}else if (gameWon === 1){
+    bank += bet * 2
+    document.getElementById("bank").textContent = bank
+    blank()
+}else if (gameWon === 2){
+    document.getElementById("bank").textContent = bank
+    blank()
+}
