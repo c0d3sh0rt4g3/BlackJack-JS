@@ -24,13 +24,8 @@ let playerCards = []
 let playerPoints
 let playerBlackJack
 
-let bank = 5000
-let bet = 100
-
 let hasBeenPlayed
 let alreadyStopped
-
-let gameWon
 
 function play(){
     if(bank >= bet){
@@ -65,35 +60,29 @@ function playOnlyCroupier(){
 
 function end(){
     if(playerPoints > 21){
-        if(playerPoints === croupierPoints){
+        if(croupierPoints > 21){
             document.getElementById("result").textContent = "There's a tie"
-            return gameWon = 0
         }else{
             document.getElementById("result").textContent = "You lose"
-            return gameWon = 2
+            return gameWon = false
         }
-    }else if(playerPoints <= 21){
+    }else if(playerPoints <= 21 && playerPoints > croupierPoints){
         if (playerBlackJack){
             document.getElementById("result").textContent = "You scored BlackJack, you win."
-            return gameWon = 1
         }else if (playerPoints === croupierPoints){
             if (croupierBlackJack){
                 document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
-                return gameWon = 2
-            }else {
                 document.getElementById("result").textContent = "There's a tie."
-                return gameWon = 0
             }
-        }else if(croupierBlackJack){
-            document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
-            return gameWon = 2
-        }else if(croupierPoints > playerPoints){
-            document.getElementById("result").textContent = "You lose"
-            return gameWon = 2
         }else {
             document.getElementById("result").textContent = "You win."
-            return gameWon = 1
         }
+    }else if(croupierBlackJack){
+            document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
+    }else if(croupierPoints > playerPoints && croupierPoints <= 21){
+        document.getElementById("result").textContent = "You lose"
+    }else{
+        document.getElementById("result").textContent = "You win"
     }
 }
 
@@ -119,23 +108,4 @@ function calculatePoints(cards) {
         end()
     }
     return points
-}
-
-function blank(){
-    document.getElementById("playertxt").textContent = ""
-    document.getElementById("croupiertxt").textContent = ""
-    document.getElementById("result").textContent = ""
-}
-
-if(gameWon === 0){
-    bank += bet
-    document.getElementById("bank").textContent = bank
-    blank()
-}else if (gameWon === 1){
-    bank += bet * 2
-    document.getElementById("bank").textContent = bank
-    blank()
-}else if (gameWon === 2){
-    document.getElementById("bank").textContent = bank
-    blank()
 }
