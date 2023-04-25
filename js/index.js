@@ -27,6 +27,11 @@ let playerBlackJack
 let hasBeenPlayed
 let alreadyStopped
 
+let bank = 5000
+let bet = 100
+
+let gameWon
+
 function play(){
     if(bank >= bet){
         bank -= bet
@@ -38,7 +43,7 @@ function play(){
         playerPoints = calculatePoints(playerCards)
 
         document.getElementById("croupiertxt").textContent = "croupier's cards: " + croupierCards + "croupier's points:" + croupierPoints + "\n"
-
+        document.getElementById("bank").textContent = bank
         document.getElementById("playertxt").textContent = "Player's cards: " + playerCards + "\n" + "Player's points:" + playerPoints + "\n"
         return hasBeenPlayed
     }else {
@@ -69,20 +74,27 @@ function end(){
     }else if(playerPoints <= 21 && playerPoints > croupierPoints){
         if (playerBlackJack){
             document.getElementById("result").textContent = "You scored BlackJack, you win."
+            return gameWon = false
         }else if (playerPoints === croupierPoints){
             if (croupierBlackJack){
                 document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
+                return gameWon = false
+            }else{
                 document.getElementById("result").textContent = "There's a tie."
             }
         }else {
             document.getElementById("result").textContent = "You win."
+            return gameWon = true
         }
     }else if(croupierBlackJack){
-            document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
+        document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
+        return gameWon = false
     }else if(croupierPoints > playerPoints && croupierPoints <= 21){
         document.getElementById("result").textContent = "You lose"
+        return gameWon = false
     }else{
         document.getElementById("result").textContent = "You win"
+        return gameWon = true
     }
 }
 
