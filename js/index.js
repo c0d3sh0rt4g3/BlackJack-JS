@@ -17,16 +17,17 @@ const getRandomCard = () => {
 }
 
 let croupierCards = []
-let croupierPoints
-let croupierBlackJack
+let croupierPoints = 0
+let croupierBlackJack = false
 
 let playerCards = []
-let playerPoints
-let playerBlackJack
+let playerPoints = 0
+let playerBlackJack = false
 
-let hasBeenPlayed
+let hasBeenPlayed = false
+let alreadyDoubled = false
 
-let bank = 5000
+let bank = 1000
 let bet = 0
 
 let gameWon
@@ -100,9 +101,17 @@ function play(){
  debe plantarse.*/
 function croupierPlay(){
     if (croupierPoints <= 16){
-        croupierCards.push(getRandomCard())
+        let croupierCard = getRandomCard()
+        croupierCards.push(croupierCard)
         croupierPoints = calculatePoints(croupierCards)
+        if(croupierPoints === 21 && croupierCards.length === 2){
+            croupierBlackJack = true
+        }
         document.getElementById("croupierTxt").textContent = "Croupier's points: " + croupierPoints
+        const croupierImg = document.createElement("img")
+        croupierImg.src = `./img/${croupierCard}`
+        croupierImg.alt = `${croupierCard}`
+        document.getElementById("croupier").appendChild(croupierImg)
     }
 }
 
@@ -111,7 +120,40 @@ function stand(){
         croupierPlay()
         end()
         bankCalc()
-    }else {alert("You can't stand because the game already ended")}
+    }else {alert("You can't stand because the game already ended or hasn't started")}
+}
+
+function double(){
+    if (playerPoints === 9 ||playerPoints === 10 || playerPoints === 11){
+        if(hasBeenPlayed && !alreadyDoubled ){
+            if(bank - bet * 2 >= 0){
+                bet += bet
+                play()
+                end()
+                bankCalc()
+            }else {alert("You don't have enough money to double")}
+        }else {alert("You can't double because the game already ended or hasn't started")}
+    }else {alert("You don't have enough points to double")}
+}
+
+function insurance(){
+    bet += bet/2
+    document.getElementById("bank").textContent = "Bank: " + bank
+    if(hasBeenPlayed){
+        if(croupierCards[0][0] === 'a'){
+            if(bank - bet >= 0){
+                croupierPlay()
+                if (croupierBlackJack){
+                    bank += bet
+                    document.getElementById("result").textContent = "You had successfully made the insurance"
+                }else {
+                    bank -= bet
+                    document.getElementById("result").textContent = "Unfortunately, you failed the insurance"
+                }
+                document.getElementById("bank").textContent = "Bank: " + bank
+            }else {alert("You dont have enough money to make an insurance")}
+        }else {alert("The first card isn't an ace so youn can't make an insurance")}
+    }else {alert("You need to play the first move first")}
 }
 
 function end(){
@@ -157,10 +199,14 @@ function calculatePoints(cards) {
         const firstElement = card[0]
         let cardPoints = 0
         if (!isNaN(firstElement)) { // number card
-            cardPoints = parseInt(firstElement)
+            if(parseInt(firstElement) === 1 && parseInt(card[1]) === 0){
+                cardPoints = 10
+            }else {
+                cardPoints = parseInt(firstElement)
+            }
         } else if (firstElement !== 'a') {
             cardPoints = 10
-        } else {
+        }else {
             if(points + 11 <= 21){
                 cardPoints = 11
             }else{
@@ -176,6 +222,15 @@ function calculatePoints(cards) {
     return points
 }
 
+function surrender(){
+    if(!gameEnded){
+        document.getElementById("result").textContent = "You had surrender so you recover half the earnings."
+        bank -= bet/2
+        document.getElementById("bank").textContent = "Bank: " + bank
+        gameEnded = true
+    }
+}
+
 function bankCalc(){
     if (gameWon && gameTie === false){
         bank += bet
@@ -188,7 +243,17 @@ function bankCalc(){
 
 function reset(){
     if (gameEnded){
-        document.getElementById("result").textContent = ""
+        restartBeforeNewHand()
+    }else {alert("You should end the hand before playing again")}
+}
+
+function retry(){
+    restartBeforeNewHand()
+    bank = 1000
+}
+
+function restartBeforeNewHand(){
+    document.getElementById("result").textContent = ""
         document.getElementById("player").innerHTML = ""
         document.getElementById("playerTxt").innerHTML = ""
         document.getElementById("croupier").innerHTML = ""
@@ -211,6 +276,4 @@ function reset(){
         'jack_of_clubs.png', 'jack_of_diamonds.png', 'jack_of_hearts.png', 'jack_of_spades.png', 'king_of_clubs.png',
         'king_of_diamonds.png', 'king_of_hearts.png', 'king_of_spades.png', 'queen_of_clubs.png', 'queen_of_diamonds.png',
         'queen_of_hearts.png', 'queen_of_spades.png']
-
-    }else {alert("You should end the hand before playing again")}
 }
