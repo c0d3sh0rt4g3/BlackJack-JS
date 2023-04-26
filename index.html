@@ -7,11 +7,24 @@
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-<div id="croupier"><p id="croupiertxt"></p></div>
-<div id="resultsdiv"><p id="result"></p></div>
-<div id="banktxt"><p id="bank"></p></div>
-<div id="player"><p id="playertxt"></p></div>
-<button onclick="playFirstTime()">Play</button>
-<button onclick="playOnlyCroupier()">Stop</button>
+
+<div id="croupier"></div>
+<div id="buttonWrapper">
+    <button class="actionButton" onclick="setBet(1)">Bet 1</button>
+    <button class="actionButton" onclick="setBet(5)">Bet 5</button>
+    <button class="actionButton" onclick="setBet(25)">Bet 25</button>
+    <button class="actionButton" onclick="setBet(50)">Bet 50</button>
+    <button class="actionButton" onclick="setBet(100)">Bet 100</button>
+    <button class="actionButton" onclick="setBet(500)">Bet 500</button>
+    <button class="actionButton" onclick="play()">Play</button>
+    <button class="actionButton" onclick="stand()">Stand</button>
+    <button class="actionButton" onclick="reset()">Play again</button>
+</div>
+<div id="player"></div>
+<p id="croupierTxt"></p>
+<p id="playerTxt"></p>
+<p id="result"></p>
+<p id="bank"></p>
+<p id="bet"></p>
 </body>
 </html>

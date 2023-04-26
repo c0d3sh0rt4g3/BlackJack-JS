@@ -1,0 +1,12 @@
+body{
+    background-image: url(../img/blackjack_board.jpg);
+    color: white;
+}
+img{
+    height: 210px;
+    width: 151px;
+}
+div{
+    display: flex;
+}
+
