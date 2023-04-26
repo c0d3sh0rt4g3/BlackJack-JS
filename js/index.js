@@ -31,24 +31,42 @@ let bank = 5000
 let bet = 100
 
 let gameWon
+let gameTie
+
+function playFirstTime(){
+    if (!hasBeenPlayed) {
+        if (bank >= bet) {
+            bank -= bet
+            play()
+        } else {
+            alert("ERROR: You dont have enough money to place this bet")
+        }
+    } else{
+        play()
+    }
+}
 
 function play(){
-    if(bank >= bet){
-        bank -= bet
-        hasBeenPlayed = true
-        croupierCards.push(getRandomCard())
-        croupierPoints = calculatePoints(croupierCards)
+    hasBeenPlayed = true
+    croupierCards.push(getRandomCard())
+    croupierPoints = calculatePoints(croupierCards)
 
-        playerCards.push(getRandomCard())
-        playerPoints = calculatePoints(playerCards)
+    playerCards.push(getRandomCard())
+    playerPoints = calculatePoints(playerCards)
 
-        document.getElementById("croupiertxt").textContent = "croupier's cards: " + croupierCards + "croupier's points:" + croupierPoints + "\n"
-        document.getElementById("bank").textContent = bank
-        document.getElementById("playertxt").textContent = "Player's cards: " + playerCards + "\n" + "Player's points:" + playerPoints + "\n"
-        return hasBeenPlayed
-    }else {
-        alert("ERROR: You dont have enough money to place this bet")
+    document.getElementById("croupiertxt").textContent = "croupier's cards: " + croupierCards + "croupier's points:" + croupierPoints + "\n"
+    document.getElementById("bank").textContent = bank
+    document.getElementById("playertxt").textContent = "Player's cards: " + playerCards + "\n" + "Player's points:" + playerPoints + "\n"
+    if (playerPoints >= 21 || croupierPoints >= 21) {
+        end()
+        bankCalc()
+        croupierCards = []
+        playerCards = []
+        hasBeenPlayed = ""
+        gameTie = ""
+        gameWon = ""
     }
+    return hasBeenPlayed
 }
 
 function playOnlyCroupier(){
@@ -59,6 +77,13 @@ function playOnlyCroupier(){
 
         document.getElementById("croupiertxt").textContent = "croupier's cards: " + croupierCards + "\n" + "croupier's points: " + croupierPoints + "\n"
         end()
+        bankCalc()
+        croupierCards = []
+        playerCards = []
+        hasBeenPlayed = ""
+        alreadyStopped = ""
+        gameTie = ""
+        gameWon = ""
         return alreadyStopped
     }else {alert("can't")}
 }
@@ -67,20 +92,19 @@ function end(){
     if(playerPoints > 21){
         if(croupierPoints > 21){
             document.getElementById("result").textContent = "There's a tie"
+            return  gameTie = true
         }else{
             document.getElementById("result").textContent = "You lose"
-            return gameWon = false
         }
     }else if(playerPoints <= 21 && playerPoints > croupierPoints){
         if (playerBlackJack){
             document.getElementById("result").textContent = "You scored BlackJack, you win."
-            return gameWon = false
         }else if (playerPoints === croupierPoints){
             if (croupierBlackJack){
                 document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
-                return gameWon = false
             }else{
                 document.getElementById("result").textContent = "There's a tie."
+                return  gameTie = true
             }
         }else {
             document.getElementById("result").textContent = "You win."
@@ -88,10 +112,8 @@ function end(){
         }
     }else if(croupierBlackJack){
         document.getElementById("result").textContent = "The croupier scored BlackJack, you lose."
-        return gameWon = false
     }else if(croupierPoints > playerPoints && croupierPoints <= 21){
         document.getElementById("result").textContent = "You lose"
-        return gameWon = false
     }else{
         document.getElementById("result").textContent = "You win"
         return gameWon = true
@@ -120,4 +142,12 @@ function calculatePoints(cards) {
         end()
     }
     return points
+}
+
+function bankCalc(){
+    if (gameWon){
+        bank += bet * 2
+    }else if (gameTie){
+        bank += bet
+    }
 }
