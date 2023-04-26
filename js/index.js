@@ -35,9 +35,13 @@ let gameEnded = false
 
 function setBet(betPlaced){
     if(!hasBeenPlayed){
-        bet += betPlaced
-        document.getElementById("bet").innerHTML = bet
-        play()
+        if (betPlaced === "all"){
+            bet = bank
+            document.getElementById("bet").innerHTML = "Your bet: " + bet
+        }else {
+            bet += betPlaced
+            document.getElementById("bet").innerHTML = "Your bet: " + bet
+        }
         return bet
     }else{
         alert("You can only place bets before starting the game")
@@ -46,7 +50,7 @@ function setBet(betPlaced){
 
 
 function play(){
-    if (bet >= 1){
+    if (bet >= 1 && bank - bet >= 0){
         if (!gameEnded){
             let croupierCard = getRandomCard()
             croupierCards.push(croupierCard)
@@ -66,7 +70,8 @@ function play(){
             document.getElementById("player").appendChild(playerImg)
 
             document.getElementById("croupierTxt").textContent = "Croupier's points:" + croupierPoints
-            document.getElementById("bank").textContent = bank
+            document.getElementById("bank").textContent = "Bank: " + bank
+            document.getElementById("bet").textContent = "Your bet: " + bet
             document.getElementById("playerTxt").textContent = "Player's points:" + playerPoints
             if (playerPoints >= 21 || croupierPoints >= 21) {
                 // check for player blackjack
@@ -88,7 +93,7 @@ function play(){
                 }
             }
         }else {alert("You cant keep playing this hand, please click play again before keep playing")}
-    }else {alert("You cant start playing without placing a bet first.")}
+    }else {alert("Sorry but that's not enough money to place a bet")}
 }
 
 /*Si el croupier tiene una puntuación de 16 o menos, debe pedir otra carta. Si tiene una puntuación de 17 o más,
@@ -177,7 +182,7 @@ function bankCalc(){
     }else if (!gameWon && gameTie === false){
         bank -= bet
     }
-    document.getElementById("bank").textContent = bank
+    document.getElementById("bank").textContent = "Bank: " + bank
     gameEnded = true
 }
 
